@@ -2,8 +2,9 @@
 Character stuff.
 """
 from django.db import models
+import caching.base
 
-class ChrRace(models.Model):
+class ChrRace(caching.base.CachingMixin, models.Model):
     """
     Table lists available races. Races are numbered like bitmask - 1,2,4,8,16...
 
@@ -17,6 +18,8 @@ class ChrRace(models.Model):
     icon_id = models.IntegerField(blank=True, null=True)
     # TODO: Add allegiance to a Faction here.
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -29,7 +32,7 @@ class ChrRace(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class ChrBloodline(models.Model):
+class ChrBloodline(caching.base.CachingMixin, models.Model):
     """
     Bloodlines for newly created characters with starting attributes.
 
@@ -57,6 +60,8 @@ class ChrBloodline(models.Model):
     short_male_description = models.TextField(blank=True)
     short_female_description = models.TextField(blank=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -69,7 +74,7 @@ class ChrBloodline(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class ChrAncestry(models.Model):
+class ChrAncestry(caching.base.CachingMixin, models.Model):
     """
     Available Ancestries with bonus skills and items.
 
@@ -88,6 +93,8 @@ class ChrAncestry(models.Model):
     icon_id = models.IntegerField(blank=True, null=True)
     short_description = models.TextField(blank=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -100,7 +107,7 @@ class ChrAncestry(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class ChrAttribute(models.Model):
+class ChrAttribute(caching.base.CachingMixin, models.Model):
     """
     Five base Attrinutes annotated.
 
@@ -114,6 +121,8 @@ class ChrAttribute(models.Model):
     notes = models.TextField(blank=True)
     icon_id = models.IntegerField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -126,7 +135,7 @@ class ChrAttribute(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class ChrFaction(models.Model):
+class ChrFaction(caching.base.CachingMixin, models.Model):
     """
     All main Factions found in game.
 
@@ -144,6 +153,8 @@ class ChrFaction(models.Model):
     station_count = models.IntegerField(default=0)
     station_system_count = models.IntegerField(default=0)
     icon_id = models.IntegerField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'

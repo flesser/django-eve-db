@@ -1,9 +1,10 @@
 from django.db import models
+import caching.base
 
-class RamActivity(models.Model):
+class RamActivity(caching.base.CachingMixin, models.Model):
     """
     Research and Manufacturing activities.
-    
+
     CCP Table: ramActivities
     CCP Primary key: "activityID" tinyint(3)
     """
@@ -13,6 +14,8 @@ class RamActivity(models.Model):
     # Name of the file, should be two numbers separated by underscore, no extension.
     icon_filename = models.CharField(max_length=50, blank=True, null=True)
     is_published = models.BooleanField(default=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -26,10 +29,10 @@ class RamActivity(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class RamAssemblyLineType(models.Model):
+class RamAssemblyLineType(caching.base.CachingMixin, models.Model):
     """
     Various assembly line types.
-    
+
     CCP Table: ramAssemblyLineTypes
     CCP Primary key: "assemblyLineTypeID" tinyint(3)
     """
@@ -41,6 +44,8 @@ class RamAssemblyLineType(models.Model):
     volume = models.FloatField(blank=True, null=True)
     activity = models.ForeignKey(RamActivity, blank=True, null=True)
     min_cost_per_hour = models.FloatField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -54,10 +59,10 @@ class RamAssemblyLineType(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class RamAssemblyLine(models.Model):
+class RamAssemblyLine(caching.base.CachingMixin, models.Model):
     """
     These represent individual assembly lines in stations.
-    
+
     CCP Table: ramAssemblyLines
     CCP Primary key: "assemblyLineID" int(11)
     """
@@ -80,6 +85,8 @@ class RamAssemblyLine(models.Model):
     owner = models.ForeignKey('CrpNPCCorporation', blank=True, null=True)
     activity = models.ForeignKey('RamActivity', blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -92,10 +99,10 @@ class RamAssemblyLine(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class RamAssemblyLineTypeDetailPerCategory(models.Model):
+class RamAssemblyLineTypeDetailPerCategory(caching.base.CachingMixin, models.Model):
     """
-    Assembly line multipliers per produced item category. 
-    
+    Assembly line multipliers per produced item category.
+
     CCP Table: ramAssemblyLineTypeDetailPerCategory
     CCP Primary key: ("assemblyLineTypeID" tinyint(3), "categoryID" tinyint(3))
     """
@@ -103,6 +110,8 @@ class RamAssemblyLineTypeDetailPerCategory(models.Model):
     category = models.ForeignKey('InvCategory')
     time_multiplier = models.FloatField(blank=True, null=True)
     material_multiplier = models.FloatField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -117,10 +126,10 @@ class RamAssemblyLineTypeDetailPerCategory(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class RamAssemblyLineTypeDetailPerGroup(models.Model):
+class RamAssemblyLineTypeDetailPerGroup(caching.base.CachingMixin, models.Model):
     """
-    Assembly line multipliers per produced item group. 
-    
+    Assembly line multipliers per produced item group.
+
     CCP Table: ramAssemblyLineTypeDetailPerGroup
     CCP Primary key: ("assemblyLineTypeID" tinyint(3), "groupID" smallint(6))
     """
@@ -128,6 +137,8 @@ class RamAssemblyLineTypeDetailPerGroup(models.Model):
     group = models.ForeignKey('InvGroup')
     time_multiplier = models.FloatField(blank=True, null=True)
     material_multiplier = models.FloatField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -142,10 +153,10 @@ class RamAssemblyLineTypeDetailPerGroup(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class RamAssemblyLineStations(models.Model):
+class RamAssemblyLineStations(caching.base.CachingMixin, models.Model):
     """
     Denotes assembly line types on individual stations.
-    
+
     CCP Table: ramAssemblyLineStations
     CCP Primary key: ("stationID" int(11), "assemblyLineTypeID" tinyint(3))
     """
@@ -156,6 +167,8 @@ class RamAssemblyLineStations(models.Model):
     owner = models.ForeignKey('CrpNPCCorporation', blank=True, null=True)
     solar_system = models.ForeignKey('MapSolarSystem', blank=True, null=True)
     region = models.ForeignKey('MapRegion', blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -170,7 +183,7 @@ class RamAssemblyLineStations(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class RamTypeRequirement(models.Model):
+class RamTypeRequirement(caching.base.CachingMixin, models.Model):
     """
     CCP Table: ramTypeRequirements
     CCP Primary key: ("typeID" smallint(6), "activityID" tinyint(3), "requiredTypeID" smallint(6))
@@ -181,6 +194,8 @@ class RamTypeRequirement(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
     damage_per_job = models.FloatField(blank=True, null=True)
     recycle = models.BooleanField(blank=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -196,16 +211,18 @@ class RamTypeRequirement(models.Model):
         return self.__unicode__()
 
 
-class StaService(models.Model):
+class StaService(caching.base.CachingMixin, models.Model):
     """
     Entries for all services available at stations.
-    
+
     CCP Table: staServices
     CCP Primary key: "serviceID" int(11)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -219,10 +236,10 @@ class StaService(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class StaStationType(models.Model):
+class StaStationType(caching.base.CachingMixin, models.Model):
     """
     Details for the different types of stations.
-    
+
     CCP Table: staStationTypes
     CCP Primary key: "stationTypeID" smallint(6)
     """
@@ -238,6 +255,8 @@ class StaStationType(models.Model):
     reprocessing_efficiency = models.FloatField(blank=True, null=True)
     is_conquerable = models.BooleanField(default=False)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -250,10 +269,10 @@ class StaStationType(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class StaOperation(models.Model):
+class StaOperation(caching.base.CachingMixin, models.Model):
     """
-    Operation types for stations. 
-    
+    Operation types for stations.
+
     CCP Table: staOperations
     CCP Primary key: "operationID" tinyint(3)
     """
@@ -282,6 +301,7 @@ class StaOperation(models.Model):
                                           related_name='jove_station_operation_set',
                                           blank=True, null=True)
 
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -295,10 +315,10 @@ class StaOperation(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class StaStation(models.Model):
+class StaStation(caching.base.CachingMixin, models.Model):
     """
-    Represents an individual station out in a system. 
-    
+    Represents an individual station out in a system.
+
     CCP Table: staStations
     CCP Primary key: "stationID" int(11)
     """
@@ -321,6 +341,8 @@ class StaStation(models.Model):
     reprocessing_stations_take = models.FloatField(blank=True, null=True)
     reprocessing_hangar_flag = models.IntegerField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -333,15 +355,17 @@ class StaStation(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class StaOperationServices(models.Model):
+class StaOperationServices(caching.base.CachingMixin, models.Model):
     """
-    Services per operations. 
-    
+    Services per operations.
+
     CCP Table: staOperationServices
     CCP Primary key: ("operationID" tinyint(3), "serviceID" int(11))
     """
     operation = models.ForeignKey(StaOperation)
     service = models.ForeignKey(StaService)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'

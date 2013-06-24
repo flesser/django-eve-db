@@ -2,8 +2,9 @@
 Skill-based certification models.
 """
 from django.db import models
+import caching.base
 
-class CrtCategory(models.Model):
+class CrtCategory(caching.base.CachingMixin, models.Model):
     """
     CCP Table: crtCategories
     CCP Primary key: "categoryID" tinyint(3)
@@ -11,20 +12,22 @@ class CrtCategory(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    
+
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Certification Category'
         verbose_name_plural = 'Certification Categories'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
-class CrtClass(models.Model):
+
+class CrtClass(caching.base.CachingMixin, models.Model):
     """
     CCP Table: crtClasses
     CCP Primary key: "classID" int(11)
@@ -32,20 +35,22 @@ class CrtClass(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    
+
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Certification Class'
         verbose_name_plural = 'Certification Classes'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
-class CrtCertificate(models.Model):
+
+class CrtCertificate(caching.base.CachingMixin, models.Model):
     """
     CCP Table: crtCertificates
     CCP Primary key: "certificateID" int(11)
@@ -60,20 +65,22 @@ class CrtCertificate(models.Model):
     # is different in the CCP dump.
     icon_num = models.IntegerField(blank=True, null=True)
     description = models.TextField(blank=True)
-    
+
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Certificate'
         verbose_name_plural = 'Certificates'
-        
+
     def __unicode__(self):
         return "%s, grade %d" % (self.cert_class.name, self.grade)
-    
+
     def __str__(self):
         return self.__unicode__()
-    
-class CrtRelationship(models.Model):
+
+class CrtRelationship(caching.base.CachingMixin, models.Model):
     """
     CCP Table: crtRelationships
     CCP Primary key: "relationshipID" int(11)
@@ -85,20 +92,22 @@ class CrtRelationship(models.Model):
     parent_level = models.IntegerField(blank=True, null=True)
     child = models.ForeignKey(CrtCertificate, blank=True, null=True,
                               related_name='child_crtrelationship_set')
-    
+
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Certification Relationship'
         verbose_name_plural = 'Certification Relationships'
-        
+
     def __unicode__(self):
         return "Cert Relationship: %d" % self.id
-    
+
     def __str__(self):
         return self.__unicode__()
-    
-class CrtRecommendation(models.Model):
+
+class CrtRecommendation(caching.base.CachingMixin, models.Model):
     """
     CCP Table: crtRecommendations
     CCP Primary key: "recommendationID" int(11)
@@ -107,16 +116,18 @@ class CrtRecommendation(models.Model):
     ship_type = models.ForeignKey('InvType', blank=True, null=True)
     certificate = models.ForeignKey(CrtCertificate, blank=True, null=True)
     recommendation_level = models.IntegerField(blank=True, null=True)
-    
+
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Certification Recommendation'
         verbose_name_plural = 'Certification Recommendations'
-        
+
     def __unicode__(self):
-        return "%s: %s" % (self.ship_type.name, 
+        return "%s: %s" % (self.ship_type.name,
                            self.certificate.cert_class.name)
-    
+
     def __str__(self):
         return self.__unicode__()

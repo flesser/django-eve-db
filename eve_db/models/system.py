@@ -2,8 +2,9 @@
 Critical components that are used throughout the other modules.
 """
 from django.db import models
+import caching.base
 
-class EveUnit(models.Model):
+class EveUnit(caching.base.CachingMixin, models.Model):
     """
     Units of measurement.
 
@@ -14,6 +15,8 @@ class EveUnit(models.Model):
     name = models.CharField(max_length=75)
     display_name = models.CharField(max_length=30, blank=True)
     description = models.CharField(max_length=100, blank=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
