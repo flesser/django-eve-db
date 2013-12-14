@@ -639,7 +639,7 @@ class InvContrabandType(caching.base.CachingMixin, models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvItem(models.Model):
+class InvItem(caching.base.CachingMixin, models.Model):
     """
     Contains all static items, i.e. items that aren't (much) affected by player activity:
 
@@ -659,6 +659,8 @@ class InvItem(models.Model):
     flag = models.ForeignKey('InvFlag')
     quantity = models.IntegerField()
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -671,7 +673,7 @@ class InvItem(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvPosition(models.Model):
+class InvPosition(caching.base.CachingMixin, models.Model):
     """
     Contains the (x, y, z) coordinate and rotation information of static items.
 
@@ -686,6 +688,8 @@ class InvPosition(models.Model):
     pitch = models.FloatField(null=True)
     roll = models.FloatField(null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -698,7 +702,7 @@ class InvPosition(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvUniqueName(models.Model):
+class InvUniqueName(caching.base.CachingMixin, models.Model):
     """
     Contains all the names of unique entities in the EVE Universe.
 
@@ -708,6 +712,8 @@ class InvUniqueName(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=100, unique=True)
     group = models.ForeignKey('InvGroup')
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'

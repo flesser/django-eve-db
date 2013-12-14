@@ -390,13 +390,15 @@ class MapLandmark(caching.base.CachingMixin, models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapLocationScene(models.Model):
+class MapLocationScene(caching.base.CachingMixin, models.Model):
     """
     CCP Table: MapLocationScenes
     CCP Primary key: "locationID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     graphic = models.IntegerField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -410,13 +412,15 @@ class MapLocationScene(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapLocationWormholeClass(models.Model):
+class MapLocationWormholeClass(caching.base.CachingMixin, models.Model):
     """
     CCP Table: MapLocationWormholeClasses
     CCP Primary key: "locationID" smallint(6)
     """
     location = models.ForeignKey('MapDenormalize', unique=True, primary_key=True)
     wormhole_class = models.IntegerField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -430,7 +434,7 @@ class MapLocationWormholeClass(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class WarCombatZone(models.Model):
+class WarCombatZone(caching.base.CachingMixin, models.Model):
     """
     CCP Table: WarCombatZone
     CCP Primary key: "combatZoneID" int(11)
@@ -440,6 +444,8 @@ class WarCombatZone(models.Model):
     faction = models.ForeignKey('ChrFaction')
     center_system = models.ForeignKey('MapSolarSystem')
     description = models.TextField(blank=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -453,13 +459,15 @@ class WarCombatZone(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class WarCombatZoneSystem(models.Model):
+class WarCombatZoneSystem(caching.base.CachingMixin, models.Model):
     """
     CCP Table: WarCombatZone
     CCP Primary key: "combatZoneID" int(11)
     """
     solar_system = models.ForeignKey('MapSolarSystem', max_length=255, blank=True)
     combat_zone = models.ForeignKey('WarCombatZone', max_length=255, blank=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'

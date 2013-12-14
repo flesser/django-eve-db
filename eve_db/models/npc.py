@@ -259,13 +259,15 @@ class AgtAgent(caching.base.CachingMixin, models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class AgtResearchAgent(models.Model):
+class AgtResearchAgent(caching.base.CachingMixin, models.Model):
     """
     CCP Table: agtResearchAgents
     CCP Primary key: "agentID" int(11)
     """
     agent = models.ForeignKey(AgtAgent)
     type = models.ForeignKey('InvType')
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'

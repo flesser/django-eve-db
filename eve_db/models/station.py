@@ -382,7 +382,7 @@ class StaOperationServices(caching.base.CachingMixin, models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class RamInstallationTypeContent(models.Model):
+class RamInstallationTypeContent(caching.base.CachingMixin, models.Model):
     """
     CCP Table: ramInstallationTypeContent
     CCP Primary key: ("installationTypeID" int(11))
@@ -390,6 +390,8 @@ class RamInstallationTypeContent(models.Model):
     installation_type = models.ForeignKey('InvType')
     assembly_line_type = models.ForeignKey(RamAssemblyLineType)
     quantity = models.IntegerField(null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
