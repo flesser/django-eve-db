@@ -3,8 +3,9 @@ This module holds inventory/item-related models.
 """
 
 from django.db import models
+import caching.base
 
-class InvName(models.Model):
+class InvName(caching.base.CachingMixin, models.Model):
     """
     This appears to be something used to search everything at once. Most of
     the stuff in this table have models with a 'name' field on them. The CCP
@@ -19,6 +20,8 @@ class InvName(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -31,7 +34,7 @@ class InvName(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvMarketGroup(models.Model):
+class InvMarketGroup(caching.base.CachingMixin, models.Model):
     """
     Market groups are used to group items together in the market browser.
 
@@ -44,6 +47,8 @@ class InvMarketGroup(models.Model):
     parent = models.ForeignKey('InvMarketGroup', blank=True, null=True)
     has_items = models.BooleanField(default=True)
     icon_id = models.IntegerField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -66,7 +71,7 @@ class InvMarketGroup(models.Model):
         else:
             return self.name
 
-class InvCategory(models.Model):
+class InvCategory(caching.base.CachingMixin, models.Model):
     """
     Inventory categories are the top level classification for all items, be
     it planets, moons, modules, ships, or any other entity within the game
@@ -81,6 +86,8 @@ class InvCategory(models.Model):
     is_published = models.BooleanField(default=True)
     icon_id = models.IntegerField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -93,7 +100,7 @@ class InvCategory(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvGroup(models.Model):
+class InvGroup(caching.base.CachingMixin, models.Model):
     """
     Inventory groups are a further sub-classification within an
     InvCategory. For example, the 'MapRegion' inventory group's
@@ -115,6 +122,8 @@ class InvGroup(models.Model):
     is_fittable_non_singleton = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -127,7 +136,7 @@ class InvGroup(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvMetaGroup(models.Model):
+class InvMetaGroup(caching.base.CachingMixin, models.Model):
     """
     Names of variants of items.
 
@@ -138,6 +147,8 @@ class InvMetaGroup(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     icon_id = models.IntegerField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -151,7 +162,7 @@ class InvMetaGroup(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvType(models.Model):
+class InvType(caching.base.CachingMixin, models.Model):
     """
     Inventory types are generally objects that can be carried in your
     inventory (with the exception of suns, moons, planets, etc.) These are mostly
@@ -175,6 +186,8 @@ class InvType(models.Model):
     is_published = models.BooleanField(default=False)
     chance_of_duplicating = models.FloatField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -190,7 +203,7 @@ class InvType(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvTypeMaterial(models.Model):
+class InvTypeMaterial(caching.base.CachingMixin, models.Model):
     """
     These are materials required to produce an item type. Used for calculating
     build requirements.
@@ -202,6 +215,8 @@ class InvTypeMaterial(models.Model):
     material_type = models.ForeignKey(InvType,
                                       related_name='itemtype_set')
     quantity = models.IntegerField(default=0)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -217,7 +232,7 @@ class InvTypeMaterial(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvMetaType(models.Model):
+class InvMetaType(caching.base.CachingMixin, models.Model):
     """
     Relation between different variants of item (i.e. Tech-I, Faction, Tech-II).
     These are not "meta-levels" of items used for calculate invention success.
@@ -234,6 +249,8 @@ class InvMetaType(models.Model):
                             related_name='inventorymetatype_parent_type_set')
     meta_group = models.ForeignKey(InvMetaGroup)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['type']
@@ -246,7 +263,7 @@ class InvMetaType(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvFlag(models.Model):
+class InvFlag(caching.base.CachingMixin, models.Model):
     """
     The invFlags table is used to identify the location and/or status of an
     item within an office, station, ship, module or other container for the
@@ -263,6 +280,8 @@ class InvFlag(models.Model):
     # Have no idea what this is.
     order = models.IntegerField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -275,7 +294,7 @@ class InvFlag(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class DgmAttributeCategory(models.Model):
+class DgmAttributeCategory(caching.base.CachingMixin, models.Model):
     """
     Attribute Categories and their descriptions.
 
@@ -285,6 +304,8 @@ class DgmAttributeCategory(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=100, blank=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -298,7 +319,7 @@ class DgmAttributeCategory(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class DgmAttributeType(models.Model):
+class DgmAttributeType(caching.base.CachingMixin, models.Model):
     """
     Names and descriptions of attributes.
 
@@ -317,6 +338,8 @@ class DgmAttributeType(models.Model):
     is_stackable = models.BooleanField(default=False)
     high_is_good = models.BooleanField(default=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -329,7 +352,7 @@ class DgmAttributeType(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class DgmTypeAttribute(models.Model):
+class DgmTypeAttribute(caching.base.CachingMixin, models.Model):
     """
     All attributes for items.
 
@@ -340,6 +363,8 @@ class DgmTypeAttribute(models.Model):
     attribute = models.ForeignKey(DgmAttributeType)
     value_int = models.IntegerField(blank=True, null=True)
     value_float = models.FloatField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -354,7 +379,7 @@ class DgmTypeAttribute(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvBlueprintType(models.Model):
+class InvBlueprintType(caching.base.CachingMixin, models.Model):
     """
     Stores info about each kind of blueprint.
 
@@ -381,6 +406,8 @@ class InvBlueprintType(models.Model):
     waste_factor = models.IntegerField(blank=True, null=True)
     max_production_limit = models.IntegerField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['blueprint_type']
@@ -393,7 +420,7 @@ class InvBlueprintType(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class DgmEffect(models.Model):
+class DgmEffect(caching.base.CachingMixin, models.Model):
     """
     Name and descriptions of effects.
 
@@ -451,6 +478,8 @@ class DgmEffect(models.Model):
                                                        blank=True, null=True,
                                                        related_name='inventoryeffectfittingusagechanceattribute')
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -463,7 +492,7 @@ class DgmEffect(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class DgmTypeEffect(models.Model):
+class DgmTypeEffect(caching.base.CachingMixin, models.Model):
     """
     Effects related to items. Effects are like boolean flags - if an item has
     an effect listed, it's subject to this effect with the specified
@@ -475,6 +504,8 @@ class DgmTypeEffect(models.Model):
     type = models.ForeignKey(InvType)
     effect = models.ForeignKey(DgmEffect)
     is_default = models.BooleanField(default=False)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -489,7 +520,7 @@ class DgmTypeEffect(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvPOSResourcePurpose(models.Model):
+class InvPOSResourcePurpose(caching.base.CachingMixin, models.Model):
     """
     Types of tasks for which POS need resources, i.e. Online, Reinforced.
 
@@ -500,6 +531,8 @@ class InvPOSResourcePurpose(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     # The purpose field maps to the CCP column purposeText
     purpose = models.CharField(max_length=75, blank=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -513,7 +546,7 @@ class InvPOSResourcePurpose(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvPOSResource(models.Model):
+class InvPOSResource(caching.base.CachingMixin, models.Model):
     """
     Fuel needed to support POSes.
 
@@ -529,6 +562,8 @@ class InvPOSResource(models.Model):
     min_security_level = models.IntegerField(blank=True, null=True)
     faction = models.ForeignKey('ChrFaction', blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -542,7 +577,7 @@ class InvPOSResource(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvTypeReaction(models.Model):
+class InvTypeReaction(caching.base.CachingMixin, models.Model):
     """
     Reaction recipes for POSes.
 
@@ -560,6 +595,8 @@ class InvTypeReaction(models.Model):
                     help_text="Reaction result or material.")
     quantity = models.IntegerField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -573,7 +610,7 @@ class InvTypeReaction(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvContrabandType(models.Model):
+class InvContrabandType(caching.base.CachingMixin, models.Model):
     """
     Points to an InventoryType that is considered contraband somewhere.
 
@@ -586,6 +623,8 @@ class InvContrabandType(models.Model):
     confiscate_min_sec = models.FloatField(blank=True, null=True)
     fine_by_value = models.FloatField(blank=True, null=True)
     attack_min_sec = models.FloatField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'

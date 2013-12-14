@@ -2,8 +2,9 @@
 Map-related models.
 """
 from django.db import models
+import caching.base
 
-class MapUniverse(models.Model):
+class MapUniverse(caching.base.CachingMixin, models.Model):
     """
     CCP Table: mapUniverse
     CCP Primary key: "universeID" int(11)
@@ -22,6 +23,8 @@ class MapUniverse(models.Model):
     x = models.FloatField(blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -34,7 +37,7 @@ class MapUniverse(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapRegion(models.Model):
+class MapRegion(caching.base.CachingMixin, models.Model):
     """
     CCP Table: mapRegions
     CCP Primary key: "regionID" int(11)
@@ -54,6 +57,8 @@ class MapRegion(models.Model):
     x = models.FloatField(blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -66,7 +71,7 @@ class MapRegion(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapRegionJump(models.Model):
+class MapRegionJump(caching.base.CachingMixin, models.Model):
     """
     CCP Table: mapRegionJumps
     CCP Primary key: ("fromRegionID" int(11), "toRegionID" int(11))
@@ -75,6 +80,8 @@ class MapRegionJump(models.Model):
                                     related_name='region_jumps_from_region_set')
     to_region = models.ForeignKey(MapRegion,
                                   related_name='region_jumps_to_region_set')
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -90,7 +97,7 @@ class MapRegionJump(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapConstellation(models.Model):
+class MapConstellation(caching.base.CachingMixin, models.Model):
     """
     Represents a constellation. Note that all sovereignty data is subject
     to change, and is held in an external model. django-eve-api has a few
@@ -118,6 +125,8 @@ class MapConstellation(models.Model):
     sovereignty_start_time = models.DateTimeField(blank=True, null=True)
     sovereignty_grace_start_time = models.DateTimeField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -130,7 +139,7 @@ class MapConstellation(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapConstellationJump(models.Model):
+class MapConstellationJump(caching.base.CachingMixin, models.Model):
     """
     CCP Table: mapConstellationJumps
     CCP Primary key: ("fromConstellationID" int(11), "toConstellationID" int(11))
@@ -143,6 +152,8 @@ class MapConstellationJump(models.Model):
                                   related_name='constellation_jumps_to_region_set')
     to_constellation = models.ForeignKey(MapConstellation,
                                          related_name='constellation_jumps_to_constellation_set')
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -158,7 +169,7 @@ class MapConstellationJump(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapSolarSystem(models.Model):
+class MapSolarSystem(caching.base.CachingMixin, models.Model):
     """
     CCP Table: mapSolarSystems
     CCP Primary key: "solarSystemID" int(11)
@@ -194,6 +205,8 @@ class MapSolarSystem(models.Model):
     sovereignty_level = models.IntegerField(blank=True, null=True)
     sovereignty_start_time = models.DateTimeField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -209,7 +222,7 @@ class MapSolarSystem(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapSolarSystemJump(models.Model):
+class MapSolarSystemJump(caching.base.CachingMixin, models.Model):
     """
     CCP Table: mapSolarSystemJumps
     CCP Primary key: ("fromSolarSystemID" int(11), "toSolarSystemID" int(11))
@@ -229,6 +242,8 @@ class MapSolarSystemJump(models.Model):
     to_solar_system = models.ForeignKey(MapSolarSystem,
                                         related_name='solar_system_jumps_to_solar_system_set')
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -243,7 +258,7 @@ class MapSolarSystemJump(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapJump(models.Model):
+class MapJump(caching.base.CachingMixin, models.Model):
     """
     Jumps between stargates.
 
@@ -255,6 +270,8 @@ class MapJump(models.Model):
                                     related_name='stargate_jump_origin_set')
     destination_gate = models.ForeignKey('MapDenormalize',
                                          related_name='stargate_jump_destination_set')
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -268,7 +285,7 @@ class MapJump(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapCelestialStatistic(models.Model):
+class MapCelestialStatistic(caching.base.CachingMixin, models.Model):
     """
     CCP Table: mapCelestialStatistics
     CCP Primary key: "celestialID" int(11)
@@ -294,6 +311,8 @@ class MapCelestialStatistic(models.Model):
     radius = models.FloatField(blank=True, null=True)
     mass = models.FloatField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['celestial']
@@ -306,7 +325,7 @@ class MapCelestialStatistic(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapDenormalize(models.Model):
+class MapDenormalize(caching.base.CachingMixin, models.Model):
     """
     CCP Table: mapDenormalize
     CCP Primary key: "itemID" int(11)
@@ -327,6 +346,8 @@ class MapDenormalize(models.Model):
     celestial_index = models.IntegerField(blank=True, null=True)
     orbit_index = models.IntegerField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -339,7 +360,7 @@ class MapDenormalize(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class MapLandmark(models.Model):
+class MapLandmark(caching.base.CachingMixin, models.Model):
     """
     CCP Table: mapLandmarks
     CCP Primary key: "landmarkID" smallint(6)
@@ -354,6 +375,8 @@ class MapLandmark(models.Model):
     radius = models.FloatField(blank=True, null=True)
     icon_id = models.IntegerField(blank=True, null=True)
     importance = models.IntegerField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'

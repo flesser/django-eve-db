@@ -2,8 +2,9 @@
 NPC Corporations, agents, and other fun.
 """
 from django.db import models
+import caching.base
 
-class CrpActivity(models.Model):
+class CrpActivity(caching.base.CachingMixin, models.Model):
     """
     Activity types of corporations.
 
@@ -13,6 +14,8 @@ class CrpActivity(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -26,7 +29,7 @@ class CrpActivity(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class CrpNPCCorporation(models.Model):
+class CrpNPCCorporation(caching.base.CachingMixin, models.Model):
     """
     CCP Table: crpNPCCorporations
     CCP Primary key: "corporationID" int(11)
@@ -83,6 +86,8 @@ class CrpNPCCorporation(models.Model):
     station_system_count = models.IntegerField(default=0, blank=True, null=True)
     icon_id = models.IntegerField(blank=True, null=True)
 
+    objects = caching.base.CachingManager()
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -98,7 +103,7 @@ class CrpNPCCorporation(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class CrpNPCDivision(models.Model):
+class CrpNPCDivision(caching.base.CachingMixin, models.Model):
     """
     Agent division types.
 
@@ -109,6 +114,8 @@ class CrpNPCDivision(models.Model):
     name = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
     leader_type = models.CharField(max_length=100, blank=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -122,7 +129,7 @@ class CrpNPCDivision(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class CrpNPCCorporationDivision(models.Model):
+class CrpNPCCorporationDivision(caching.base.CachingMixin, models.Model):
     """
     Agent divisions available in corporations.
 
@@ -132,6 +139,8 @@ class CrpNPCCorporationDivision(models.Model):
     corporation = models.ForeignKey(CrpNPCCorporation)
     division = models.ForeignKey(CrpNPCDivision)
     size = models.IntegerField(blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -146,7 +155,7 @@ class CrpNPCCorporationDivision(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class CrpNPCCorporationTrade(models.Model):
+class CrpNPCCorporationTrade(caching.base.CachingMixin, models.Model):
     """
     Market items the corporation buys or sells. Supply/demand has been removed
     from dumps, see:
@@ -157,6 +166,8 @@ class CrpNPCCorporationTrade(models.Model):
     """
     corporation = models.ForeignKey(CrpNPCCorporation)
     type = models.ForeignKey('InvType', blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -171,7 +182,7 @@ class CrpNPCCorporationTrade(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class CrpNPCCorporationResearchField(models.Model):
+class CrpNPCCorporationResearchField(caching.base.CachingMixin, models.Model):
     """
     Research fields for R&D agents in corporations.
 
@@ -180,6 +191,8 @@ class CrpNPCCorporationResearchField(models.Model):
     """
     corporation = models.ForeignKey(CrpNPCCorporation)
     skill = models.ForeignKey('InvType', blank=True, null=True)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -194,13 +207,15 @@ class CrpNPCCorporationResearchField(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class AgtAgentType(models.Model):
+class AgtAgentType(caching.base.CachingMixin, models.Model):
     """
     CCP Table: agtAgentTypes
     CCP Primary key: "agentTypeID" tinyint(3)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
@@ -214,7 +229,7 @@ class AgtAgentType(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class AgtAgent(models.Model):
+class AgtAgent(caching.base.CachingMixin, models.Model):
     """
     CCP Table: agtAgents
     CCP Primary key: "agentID" int(11)
@@ -229,6 +244,8 @@ class AgtAgent(models.Model):
     quality = models.IntegerField(blank=True, null=True)
     type = models.ForeignKey(AgtAgentType, blank=True, null=True)
     locator = models.BooleanField(default=False)
+
+    objects = caching.base.CachingManager()
 
     class Meta:
         app_label = 'eve_db'
