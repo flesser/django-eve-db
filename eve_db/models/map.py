@@ -372,9 +372,7 @@ class MapLandmark(caching.base.CachingMixin, models.Model):
     x = models.FloatField(blank=True, null=True)
     y = models.FloatField(blank=True, null=True)
     z = models.FloatField(blank=True, null=True)
-    radius = models.FloatField(blank=True, null=True)
     icon_id = models.IntegerField(blank=True, null=True)
-    importance = models.IntegerField(blank=True, null=True)
 
     objects = caching.base.CachingManager()
 
