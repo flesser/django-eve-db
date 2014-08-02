@@ -283,8 +283,8 @@ class DgmAttributeCategory(models.Model):
     CCP Primary key: "categoryID" tinyint(3)
     """
     id = models.IntegerField(unique=True, primary_key=True)
-    name = models.CharField(max_length=30)
-    description = models.CharField(max_length=100, blank=True)
+    name = models.CharField(max_length=50)
+    description = models.CharField(max_length=255, blank=True)
 
     class Meta:
         app_label = 'eve_db'
@@ -350,45 +350,6 @@ class DgmTypeAttribute(models.Model):
 
     def __unicode__(self):
         return self.inventory_type.name + ' - ' + self.attribute.name
-
-    def __str__(self):
-        return self.__unicode__()
-
-class InvBlueprintType(models.Model):
-    """
-    Stores info about each kind of blueprint.
-
-    CCP Table: invBlueprintTypes
-    CCP Primary key: "blueprintTypeID" smallint(6)
-    """
-    blueprint_type = models.ForeignKey(InvType,
-                                       unique=True, primary_key=True,
-                                       related_name='blueprint_type_set')
-    product_type = models.ForeignKey(InvType,
-                                     related_name='blueprint_product_type_set')
-    # This is used for T2. Not always populated.
-    parent_blueprint_type = models.ForeignKey(InvType, blank=True,
-                                              null=True,
-                                              related_name='parent_blueprint_type_set')
-    production_time = models.IntegerField(blank=True, null=True)
-    tech_level = models.IntegerField(blank=True, null=True)
-    research_productivity_time = models.IntegerField(blank=True, null=True)
-    research_material_time = models.IntegerField(blank=True, null=True)
-    research_copy_time = models.IntegerField(blank=True, null=True)
-    research_tech_time = models.IntegerField(blank=True, null=True)
-    productivity_modifier = models.IntegerField(blank=True, null=True)
-    material_modifier = models.IntegerField(blank=True, null=True)
-    waste_factor = models.IntegerField(blank=True, null=True)
-    max_production_limit = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        app_label = 'eve_db'
-        ordering = ['blueprint_type']
-        verbose_name = 'Inventory Blueprint Type'
-        verbose_name_plural = 'Inventory Blueprint Types'
-
-    def __unicode__(self):
-        return "BP: %s" % self.product_type
 
     def __str__(self):
         return self.__unicode__()
