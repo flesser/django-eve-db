@@ -169,24 +169,6 @@ class Importer_invFlags(SQLImporter):
                  ('order', 'orderID'))
 
 
-class Importer_invBlueprintTypes(SQLImporter):
-    DEPENDENCIES = ['invTypes', 'invBlueprintTypes']
-    model = InvBlueprintType
-    pks = (('blueprint_type', 'blueprintTypeID'),)
-    field_map = (('product_type_id', 'productTypeID'),
-                 ('production_time', 'productionTime'),
-                 ('parent_blueprint_type_id', 'parentBlueprintTypeID'),
-                 ('tech_level', 'techLevel'),
-                 ('research_productivity_time', 'researchProductivityTime'),
-                 ('research_material_time', 'researchMaterialTime'),
-                 ('research_copy_time', 'researchCopyTime'),
-                 ('research_tech_time', 'researchTechTime'),
-                 ('productivity_modifier', 'productivityModifier'),
-                 ('material_modifier', 'materialModifier'),
-                 ('waste_factor', 'wasteFactor'),
-                 ('max_production_limit', 'maxProductionLimit'))
-
-
 class Importer_invControlTowerResourcePurposes(SQLImporter):
     DEPENDENCIES = ['invControlTowerResourcePurposes']
     model = InvPOSResourcePurpose
