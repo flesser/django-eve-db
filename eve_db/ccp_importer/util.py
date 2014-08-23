@@ -121,7 +121,7 @@ def add_dependencies(importer_classes):
         _recursively_find_dependencies(importer_class, importer_classes)
     #print "CLASSES:", importer_classes
 
-def run_importers(importer_classes, sqlite_file, include_deps=False):
+def run_importers(importer_classes, sqlite_file, include_deps=False, database="default"):
     """
     importer_classes: (list) References to the importer classes to run.
     sqlite_file: (str) Path to the SQLite file to import from.
@@ -143,7 +143,7 @@ def run_importers(importer_classes, sqlite_file, include_deps=False):
     # Carry out the imports in order.
     for importer_class in ordered_importers:
         importer = importer_class()
-        importer.prep_and_run_importer(conn)
+        importer.prep_and_run_importer(conn, database)
 
     # Print the total time, for the ricers.
     time_elapsed = datetime.datetime.now() - time_started

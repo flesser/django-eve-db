@@ -2,6 +2,7 @@ import sys
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
+from django.db import DEFAULT_DB_ALIAS
 from eve_db.ccp_importer import util
 from eve_db.ccp_importer import importers
 
@@ -87,6 +88,9 @@ class Command(BaseCommand):
                           dest="start_at_import",
                           help="""Starts and continues the import process at
                                   the specified table."""),
+        make_option('--database', action='store', dest='database',
+            default=DEFAULT_DB_ALIAS, help='Nominates a database to synchronize. '
+                'Defaults to the "default" database.'),
     )
     help = """This importer script will either import one or all tables from
 the CCP data dump. If no arguments are specified, all tables will be imported."""
@@ -111,9 +115,13 @@ the CCP data dump. If no arguments are specified, all tables will be imported.""
             sqlite_file = args[0]
             check_for_eve_db(sqlite_file)
 
+            database = options.get('database')
+            if database:
+                print "Using database '%s'" % database
+
             if len(args) is 1:
                 print "No table names specified, importing all."
-                util.run_importers(util.IMPORT_LIST, sqlite_file)
+                util.run_importers(util.IMPORT_LIST, sqlite_file, database=database)
             else:
                 specified_importers = get_importer_classes_from_arg_list(args)
                 start_at_import = options.get('start_at_import')
@@ -130,7 +138,7 @@ the CCP data dump. If no arguments are specified, all tables will be imported.""
                     specified_importers = get_importers_for_start_at_import(specified_importers)
 
                 util.run_importers(specified_importers, sqlite_file,
-                                   include_deps=include_deps)
+                                   include_deps=include_deps, database=database)
         except KeyboardInterrupt:
             print "Terminating early..."
             exit_with_succ()

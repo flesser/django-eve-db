@@ -32,7 +32,7 @@ class SQLImporter(object):
         self.pbar = None
 
     @transaction.commit_manually
-    def prep_and_run_importer(self, conn):
+    def prep_and_run_importer(self, conn, database="default"):
         """
         Prepares the SQLite objects, progress bars, and other things and
         runs the importer.
@@ -61,13 +61,13 @@ class SQLImporter(object):
                         inserts_bucket.append(new_obj)
                         inserts_counter += 1
                         if inserts_counter % batch_size == 0:
-                            insert_many(inserts_bucket)
+                            insert_many(inserts_bucket, using=database)
                             inserts_bucket = []
                     else:
                         updates_bucket.append(new_obj)
                         updates_counter += 1
                         if updates_counter % batch_size == 0:
-                            update_many(updates_bucket)
+                            update_many(updates_bucket, using=database)
                             updates_bucket = []
 
                 if self.itercount % self.progress_update_interval == 0:
@@ -78,9 +78,9 @@ class SQLImporter(object):
     #                if settings.DEBUG:
     #                    db.reset_queries()
             if len(inserts_bucket) > 0:
-                insert_many(inserts_bucket)
+                insert_many(inserts_bucket, using=database)
             if len(updates_bucket) > 0:
-                update_many(updates_bucket)
+                update_many(updates_bucket, using=database)
         except Exception:
             transaction.rollback()
             raise
