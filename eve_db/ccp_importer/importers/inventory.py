@@ -52,8 +52,19 @@ class Importer_invMarketGroups(SQLImporter):
     field_map = (('name', 'marketGroupName'),
                  ('icon_id', 'iconID'),
                  ('description', 'description'),
-                 ('parent_id', 'parentGroupID'),
+                 #('parent_id', 'parentGroupID'),
                  ('has_items', 'hasTypes', parse_int_bool))
+
+    def prep_and_run_importer(self, conn, database="default"):
+        """
+        Import without parentGroupID first, to avoid DB integrity errors
+        #FIXME: find a more elegant solution
+        """
+        print "1st Pass..."
+        super(Importer_invMarketGroups, self).prep_and_run_importer(conn, database)
+        self.field_map += (('parent_id', 'parentGroupID'),)
+        print "2nd Pass..."
+        super(Importer_invMarketGroups, self).prep_and_run_importer(conn, database)
 
 
 class Importer_invTypes(SQLImporter):

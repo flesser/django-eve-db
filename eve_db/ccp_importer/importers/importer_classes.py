@@ -7,6 +7,7 @@ from django.db import transaction
 from django.conf import settings
 from eve_db.ccp_importer.bulkops import insert_many, update_many
 
+
 class SQLImporter(object):
     """
     Serves as the encapsulating class for importers.
@@ -182,6 +183,7 @@ def parse_int_bool(int_bool):
     if int_bool == 1:
         return True
     return False
+
 
 def parse_char_notnull(value):
     '''

@@ -302,8 +302,8 @@ class DgmAttributeCategory(caching.base.CachingMixin, models.Model):
     CCP Primary key: "categoryID" tinyint(3)
     """
     id = models.IntegerField(unique=True, primary_key=True)
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=50, null=True, blank=True)
+    description = models.CharField(max_length=255, null=True, blank=True)
 
     objects = caching.base.CachingManager()
 
