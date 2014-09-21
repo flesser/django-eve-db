@@ -3,7 +3,10 @@ This module holds inventory/item-related models.
 """
 
 from django.db import models
+from django.utils.functional import cached_property
+
 import caching.base
+
 
 class InvName(caching.base.CachingMixin, models.Model):
     """
@@ -162,6 +165,7 @@ class InvMetaGroup(caching.base.CachingMixin, models.Model):
     def __str__(self):
         return self.__unicode__()
 
+
 class InvType(caching.base.CachingMixin, models.Model):
     """
     Inventory types are generally objects that can be carried in your
@@ -202,6 +206,16 @@ class InvType(caching.base.CachingMixin, models.Model):
 
     def __str__(self):
         return self.__unicode__()
+
+    @cached_property
+    def meta_level(self):
+        try:
+            return DgmTypeAttribute.objects.get(
+                inventory_type=self.pk,
+                attribute_id=633).value_int
+        except DgmTypeAttribute.DoesNotExist:
+            return None
+
 
 class InvTypeMaterial(caching.base.CachingMixin, models.Model):
     """
