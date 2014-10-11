@@ -77,7 +77,7 @@ class PlanetSchematicsTypeMap(caching.base.CachingMixin, models.Model):
     schematic = models.ForeignKey(PlanetSchematic)
     type = models.ForeignKey('InvType')
     quantity = models.IntegerField(null=True, blank=True)
-    is_input = models.BooleanField(blank=True)
+    is_input = models.BooleanField(blank=True, default=False)
 
     objects = caching.base.CachingManager()
 
